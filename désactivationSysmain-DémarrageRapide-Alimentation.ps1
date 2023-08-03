@@ -10,12 +10,12 @@ Stop-Service -DisplayName $sysmain
 sc.exe delete $sysmain
 
 # Désactivation du démarrage rapide et de la veille prolongée
-powercfg /h off # Désactive la veille prolongée et le démarrage rapide
+powercfg /h off -AllUsers # Désactive la veille prolongée et le démarrage rapide
 Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power' -Name HiberbootEnabled -Value 0 # Désactive le démarrage rapide dans le registre de Windows
 
 # Changement des temps de mise en veille
-Powercfg /Change monitor-timeout-ac 60 # 1 Heures
-Powercfg /Change monitor-timeout-dc 60 # 1 Heures
-Powercfg /Change standby-timeout-ac 300 # 5 Heures = 60 Minutes * 5
-Powercfg /Change standby-timeout-dc 300 # 5 Heures = 60 Minutes * 5
+Powercfg /Change monitor-timeout-ac 60 # 1 Heures / mise à l'arrêt de l'écran
+Powercfg /Change monitor-timeout-dc 60 # 1 Heures / mise à l'arrêt de l'écran
+Powercfg /Change standby-timeout-ac 300 # 5 Heures = 60 Minutes * 5 / veille
+Powercfg /Change standby-timeout-dc 300 # 5 Heures = 60 Minutes * 5 / veille
 
