@@ -19,3 +19,7 @@ Powercfg /Change monitor-timeout-dc 60 # 1 Heures / mise à l'arrêt de l'écran
 Powercfg /Change standby-timeout-ac 300 # 5 Heures = 60 Minutes * 5 / veille
 Powercfg /Change standby-timeout-dc 300 # 5 Heures = 60 Minutes * 5 / veille
 
+# Protection d'un point de restauration du disque de stockage (5%)
+powershell -command "Enable-ComputerRestore -Drive C:"
+vssadmin resize shadowstorage /for=C: /on=C: /maxsize=5%
+
