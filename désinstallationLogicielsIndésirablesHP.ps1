@@ -55,84 +55,86 @@ $OtherPackagesToUninstall = @(
 )
 
 function uninstallChoice {
-    $userChoice = Read-Host 'Voulez-vous lancer le processus de desinstallation des logiciels indesirables ? (O pour Oui - N pour Non) '
+    $userChoice = Read-Host 'Voulez-vous lancer le processus de désinstallation des logiciels indésirables ? (O pour Oui - N pour Non) '
 
-    if ($userChoice = 'N') {
-        Write-Host -ForegroundColor DarkGreen 'Le processus de desinstallation a ete annule.'
-        Exit
-    }
-    
-    if ($userChoice = 'O') {
-        Write-Host -ForegroundColor Red 'Lancement du processus de desinstallation des logiciels indesirables.'
-
-        # Désinstallation des logiciels inutiles / indésirables du PC
-
-        # Logiciels Microsoft
-        ForEach ($AppxPackage in $MSPackagesToUninstall) {
-            Write-Host -Object "Desinstallation du package suivant : [$($AppxPackage.Name)]..."
-            Try {
-                $Null = Remove-AppxPackage -Package $AppxPackage.PackageFullName -AllUsers -ErrorAction Continue
-                Write-Host -Object "Desinstallation réussi du package : [$($AppxPackage.Name)]"
-            }
-            Catch {
-                Write-Warning -Message "Echec de la desinstallation du package : [$($AppxPackage.Name)]"
-            }
-        }
-
-        # Logiciels HP, ID du Fabricant du Package : AD2F1837
-        ForEach ($AppxPackage in $HPPackagesToUninstall) {
-            Write-Host -Object "Desinstallation du package suivant : [$($AppxPackage.Name)]..."
-            Try {
-                $Null = Remove-AppxPackage -Package $AppxPackage.PackageFullName -AllUsers -ErrorAction Stop
-                Write-Host -Object "Desinstallation réussi du package : [$($AppxPackage.Name)]"
-            }
-            Catch {
-                Write-Warning -Message "Echec de la desinstallation du package : [$($AppxPackage.Name)]"
-            }
-        }
-        # Autres
-        ForEach ($AppxPackage in $OtherPackagesToUninstall) {
-            Write-Host -Object "Desinstallation du package suivant : [$($AppxPackage.Name)]..."
-            Try {
-                $Null = Remove-AppxPackage -Package $AppxPackage.PackageFullName -AllUsers -ErrorAction Stop
-                Write-Host -Object "Desinstallation réussi du package : [$($AppxPackage.Name)]"
-            }
-            Catch {
-                Write-Warning -Message "Echec de la desinstallation du package : [$($AppxPackage.Name)]"
-            }
-        }
-
-        # 1er essai de désinstallation d'HP Wolf Security
-        Try {
-            MsiExec /x "{0E2E04B0-9EDD-11EB-B38C-10604B96B11E}" /qn /norestart
-            Write-Host -Object "Désinstallation d'HP Wolf Security..."
-        }
-        Catch {
-            Write-Warning -Object "Echec de la desinstallation d'HP Wolf Security avec MSI, erreur : $($_.Exception.Message)"
-        }
-        
-        # 2ème essai de désinstallation d'HP Wolf Security
-        Try {
-            MsiExec /x "{4DA839F0-72CF-11EC-B247-3863BB3CB5A8}" /qn /norestart
-            Write-Host -Object "Désinstallation d'HP Wolf Security..."
-        }
-        Catch {
-            Write-Warning -Object  "Echec de la desinstallation d'HP Wolf Security avec MSI, erreur : $($_.Exception.Message)"
-        }
-    }
-}
-
-function computerRestartChoice {
-    $rebootChoice = Read-Host "Voulez-vous redemarrarer l'ordinateur ? (O pour Oui - N pour Non)"
-    switch ($rebootChoice) {
-        O{
-            Restart-Computer -Force -Confirm:$false
-        }
-        N{
-            Write-Host "L'ordinateur ne sera pas redemarre !"
+    switch ($userChoice) {
+        'N' {
+            Write-Host -ForegroundColor Green 'Le processus de désinstallation a été annulé.'
             Exit
         }
-        default{write-warning "Redemarrage annule !"}
+
+        'O' {
+            Write-Host -ForegroundColor Yellow 'Lancement du processus de désinstallation des logiciels indésirables.'
+
+            # Désinstallation des logiciels inutiles / indésirables du PC
+    
+            # Logiciels Microsoft
+            ForEach ($AppxPackage in $MSPackagesToUninstall) {
+                Write-Host -Object -ForegroundColor Yellow "Désinstallation du package suivant : [$($AppxPackage.Name)]..."
+                Try {
+                    $Null = Remove-AppxPackage -Package $AppxPackage.PackageFullName -AllUsers -ErrorAction Continue
+                    Write-Host  -ForegroundColor Green -Object "Désinstallation réussi du package : [$($AppxPackage.Name)]"
+                }
+                Catch {
+                    Write-Warning -Message -ForegroundColor Red "Échec de la désinstallation du package : [$($AppxPackage.Name)]"
+                }
+            }
+    
+            # Logiciels HP, ID du Fabricant du Package : AD2F1837
+            ForEach ($AppxPackage in $HPPackagesToUninstall) {
+                Write-Host -Object -ForegroundColor Yellow "Désinstallation du package suivant : [$($AppxPackage.Name)]..."
+                Try {
+                    $Null = Remove-AppxPackage -Package $AppxPackage.PackageFullName -AllUsers -ErrorAction Stop
+                    Write-Host -Object -ForegroundColor Green "Désinstallation réussi du package : [$($AppxPackage.Name)]"
+                }
+                Catch {
+                    Write-Warning -Message -ForegroundColor Red "Échec de la désinstallation du package : [$($AppxPackage.Name)]"
+                }
+            }
+            # Autres
+            ForEach ($AppxPackage in $OtherPackagesToUninstall) {
+                Write-Host -Object -ForegroundColor Yellow "Désinstallation du package suivant : [$($AppxPackage.Name)]..."
+                Try {
+                    $Null = Remove-AppxPackage -Package $AppxPackage.PackageFullName -AllUsers -ErrorAction Stop
+                    Write-Host -Object -ForegroundColor Green "Désinstallation réussi du package : [$($AppxPackage.Name)]"
+                }
+                Catch {
+                    Write-Warning -Message -ForegroundColor Red "Échec de la désinstallation du package : [$($AppxPackage.Name)]"
+                }
+            }
+    
+            # 1er essai de désinstallation d'HP Wolf Security
+            Try {
+                MsiExec /x "{0E2E04B0-9EDD-11EB-B38C-10604B96B11E}" /qn /norestart
+                Write-Host -Object "Désinstallation d'HP Wolf Security..."
+            }
+            Catch {
+                Write-Warning -Object "Échec de la désinstallation d'HP Wolf Security avec MSI, erreur : $($_.Exception.Message)"
+            }
+            
+            # 2ème essai de désinstallation d'HP Wolf Security
+            Try {
+                MsiExec /x "{4DA839F0-72CF-11EC-B247-3863BB3CB5A8}" /qn /norestart
+                Write-Host -Object "Désinstallation d'HP Wolf Security..."
+            }
+            Catch {
+                Write-Warning -Object  "Échec de la désinstallation d'HP Wolf Security avec MSI, erreur : $($_.Exception.Message)"
+            }
+        }
+        }
+    }
+
+function computerRestartChoice {
+    $rebootChoice = Read-Host "Voulez-vous redémarrarer l'ordinateur ? (O pour Oui - N pour Non)"
+    switch ($rebootChoice) {
+        'O' {
+            Restart-Computer -Force -Confirm:$false
+        }
+        'N' {
+            Write-Host "L'ordinateur ne sera pas redémarré !"
+            Exit
+        }
+        default{write-warning "Redémarrage annulé !"}
     }
 }
 uninstallChoice
