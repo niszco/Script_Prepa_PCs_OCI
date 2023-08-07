@@ -2,7 +2,7 @@
 Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"D:\Script_Prepa_PCs`"" -Verb RunAs
 
 # Trouve le profil "Administrateur" de Windows et active le profil
-$enablingAdministrator = Get-LocalUser -Name "Administrateur" | Enable-LocalUser
+$enablingAdministrator = Get-LocalUser -Name "Administrateur"
 
 # Si le profil est déjà activé, on affiche un message
 if (-not $enablingAdministrator) {
@@ -14,7 +14,7 @@ function clientCodeRequest {
         $cred = Get-Credential -UserName "Administrateur" -Message "Tapez le mot de passe pour le compte Administrateur (C00XXXX@oci)"
 
         # Ajoute le mot de passe tapé par l'utilisateur comme mot de passe de l'Administrateur
-        Set-LocalUser -Name "Administrateur" -Password $cred.Password
+        Set-LocalUser -Name "Administrateur" -Password $cred.Password | Enable-LocalUser
 
         Write-Host "Le mot de passe pour l'administrateur a été modifié avec succès !"
 }
